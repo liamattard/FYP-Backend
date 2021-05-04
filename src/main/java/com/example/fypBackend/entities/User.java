@@ -13,12 +13,37 @@ import javax.persistence.Table;
 @Table(name = "user", schema = "public")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer user_id;
+
+    @Column(name = "access_token")
+    private String accessToken;
+
+    @Column(name = "date_time")
+    private java.sql.Timestamp date_time;
+
+    @Column(name = "score")
+    private String score;
+
+    @ManyToOne
+    @JoinColumn(name = "system_id")
+    private System system;
+
     public Integer getUser_id() {
         return this.user_id;
     }
 
     public void setUser_id(Integer user_id) {
         this.user_id = user_id;
+    }
+
+    public String getAccessToken() {
+        return this.accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public java.sql.Timestamp getDate_time() {
@@ -44,18 +69,5 @@ public class User {
     public void setSystem(System system) {
         this.system = system;
     }
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer user_id;
-
-    @Column(name = "date_time")
-    private java.sql.Timestamp date_time;
-
-    @Column(name = "score")
-    private String score;
-
-    @ManyToOne
-    @JoinColumn(name = "system_id")
-    private System system;
 
 }

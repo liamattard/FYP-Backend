@@ -1,17 +1,20 @@
 package com.example.fypBackend.services;
 
-import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.example.fypBackend.entities.instagramResponse.Datum;
+import com.example.fypBackend.entities.instagramResponse.Image;
+import com.example.fypBackend.entities.instagramResponse.Root;
+
+import java.util.List;
 
 import com.example.fypBackend.entities.Response;
 
-import java.util.HashMap;
-import java.util.Collections;
 import org.springframework.util.LinkedMultiValueMap;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -44,8 +47,26 @@ public class InstagramService {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
         ResponseEntity<Response> response = this.restTemplate.postForEntity(url, request, Response.class);
 
-        return response.getBody().getAccess_token();
+        String access_token = response.getBody().getAccess_token();
+        String urlTwo = "https://graph.instagram.com/me/media?access_token=" + access_token;
+        urlTwo = urlTwo + "&fields=id,caption";
 
+        ResponseEntity<Root> responseTwo = this.restTemplate.getForEntity(urlTwo, Root.class);
+
+        List<Datum> listOfImages = responseTwo.getBody().data;
+
+        String allImages = " ";
+        for (int i = 0; i < listOfImages.size(); i++) {
+            String urlThree = "https://graph.instagram.com/" + listOfImages.get(i).id;
+            urlThree = urlThree + "?fields=id,media_type,media_url,username,timestamp";
+            urlThree = urlThree + "&access_token=" + access_token;
+
+            ResponseEntity<Image> responseThree = this.restTemplate.getForEntity(urlThree, Image.class);
+            allImages = allImages + "\n" + responseThree.getBody().media_url;
+
+        }
+
+        return allImages;
     }
 
 }
