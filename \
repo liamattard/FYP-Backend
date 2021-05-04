@@ -1,0 +1,9 @@
+package com.example.fypBackend.services;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class InstagramService {
+    private final RestTemplate restTemplate;
+}

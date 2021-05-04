@@ -1,16 +1,23 @@
 package com.example.fypBackend.controllers;
 
+import com.example.fypBackend.services.InstagramService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
-public class AuthController {
+public class InstagramController {
 
+    @Autowired
+    private InstagramService instagramService;
 
     @Value("${instagram.client.id}")
     String clientId;
@@ -18,10 +25,18 @@ public class AuthController {
     @Value("${instagram.redirectUrl}")
     String redirectUri;
 
+    @Value("${instagram.appSecret}")
+    String appSecret;
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
     @RequestMapping(value = "/auth/")
     public RedirectView authUser() {
 
-        System.out.println("REDIRECT URI:"+redirectUri);
+        System.out.println("REDIRECT URI:" + redirectUri);
 
         String baseUrl = "https://api.instagram.com/oauth/authorize?";
 
@@ -33,10 +48,10 @@ public class AuthController {
 
     }
 
-    @RequestMapping(value = "/getCode/", method = RequestMethod.GET)
-    public @ResponseBody String getCode(@RequestParam("code") String code) {
+    @RequestMapping(value = "/getPhotos/", method = RequestMethod.GET)
+    public @ResponseBody String getPhotos(@RequestParam("code") String code) {
 
-        return code;
+        return instagramService.getToken(clientId, appSecret, redirectUri, code);
     }
 
 }
