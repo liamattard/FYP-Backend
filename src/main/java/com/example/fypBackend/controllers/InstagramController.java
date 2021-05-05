@@ -1,6 +1,8 @@
 package com.example.fypBackend.controllers;
 
+import com.example.fypBackend.entities.User;
 import com.example.fypBackend.services.InstagramService;
+import com.example.fypBackend.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +20,9 @@ public class InstagramController {
 
     @Autowired
     private InstagramService instagramService;
+
+    @Autowired
+    private UserService userService;
 
     @Value("${instagram.client.id}")
     String clientId;
@@ -48,10 +53,20 @@ public class InstagramController {
 
     }
 
-    @RequestMapping(value = "/getPhotos/", method = RequestMethod.GET)
-    public @ResponseBody String getPhotos(@RequestParam("code") String code) {
+    @RequestMapping(value = "/getToken/", method = RequestMethod.GET)
+    public @ResponseBody int getToken(@RequestParam("code") String code) {
 
-        return instagramService.getToken(clientId, appSecret, redirectUri, code);
+        String accessToken = instagramService.getToken(clientId, appSecret, redirectUri, code);
+        User user = new User(accessToken);
+        int new_id = userService.createUser(user);
+
+        return new_id;
+    }
+
+    @RequestMapping(value = "/classifyPhotos", method = RequestMethod.GET)
+    public @ResponseBody String classifyPhotos(@RequestParam("id") int id) {
+
+        return "FOUND USER";
     }
 
 }

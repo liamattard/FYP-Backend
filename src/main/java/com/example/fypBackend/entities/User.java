@@ -1,5 +1,7 @@
 package com.example.fypBackend.entities;
 
+import java.time.Instant;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,11 +26,24 @@ public class User {
     private java.sql.Timestamp date_time;
 
     @Column(name = "score")
-    private String score;
+    private int score;
 
     @ManyToOne
     @JoinColumn(name = "system_id")
     private System system;
+
+    public User() {
+
+    }
+
+    public User(String accessToken) {
+
+        this.date_time = java.sql.Timestamp.from(Instant.now());
+        this.accessToken = accessToken;
+        this.score = 0;
+        this.system = null;
+
+    }
 
     public Integer getUser_id() {
         return this.user_id;
@@ -54,11 +69,11 @@ public class User {
         this.date_time = date_time;
     }
 
-    public String getScore() {
+    public int getScore() {
         return this.score;
     }
 
-    public void setScore(String score) {
+    public void setScore(int score) {
         this.score = score;
     }
 

@@ -30,24 +30,8 @@ public class InstagramService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public String getToken(String clientId, String appSecret, String redirectUri, String code) {
+    public String classifyPhotos(String access_token) {
 
-        String url = "https://api.instagram.com/oauth/access_token";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-        map.add("client_id", clientId);
-        map.add("client_secret", appSecret);
-        map.add("grant_type", "authorization_code");
-        map.add("redirect_uri", redirectUri);
-        map.add("code", code);
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-        ResponseEntity<Response> response = this.restTemplate.postForEntity(url, request, Response.class);
-
-        String access_token = response.getBody().getAccess_token();
         String urlTwo = "https://graph.instagram.com/me/media?access_token=" + access_token;
         urlTwo = urlTwo + "&fields=id,caption";
 
@@ -67,6 +51,29 @@ public class InstagramService {
         }
 
         return allImages;
+
+    }
+
+    public String getToken(String clientId, String appSecret, String redirectUri, String code) {
+
+        String url = "https://api.instagram.com/oauth/access_token";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("client_id", clientId);
+        map.add("client_secret", appSecret);
+        map.add("grant_type", "authorization_code");
+        map.add("redirect_uri", redirectUri);
+        map.add("code", code);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<Response> response = this.restTemplate.postForEntity(url, request, Response.class);
+
+        String access_token = response.getBody().getAccess_token();
+
+        return access_token;
     }
 
 }
