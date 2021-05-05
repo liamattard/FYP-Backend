@@ -9,6 +9,7 @@ import com.example.fypBackend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +42,7 @@ public class InstagramController {
     }
 
     @RequestMapping(value = "/auth/")
+    @CrossOrigin(origins = "")
     public RedirectView authUser() {
 
         System.out.println("REDIRECT URI:" + redirectUri);
@@ -56,6 +58,7 @@ public class InstagramController {
     }
 
     @RequestMapping(value = "/getToken/", method = RequestMethod.GET)
+    @CrossOrigin(origins = "")
     public @ResponseBody int getToken(@RequestParam("code") String code) {
 
         String accessToken = instagramService.getToken(clientId, appSecret, redirectUri, code);
@@ -66,6 +69,7 @@ public class InstagramController {
     }
 
     @RequestMapping(value = "/classifyPhotos", method = RequestMethod.GET)
+    @CrossOrigin(origins = "")
     public @ResponseBody String classifyPhotos(@RequestParam("id") int id) throws Exception {
 
         Optional<User> user = userService.findById(id);
