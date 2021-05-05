@@ -41,8 +41,8 @@ public class InstagramController {
         return new RestTemplate();
     }
 
-    @RequestMapping(value = "/auth/")
     @CrossOrigin(origins = "")
+    @RequestMapping(value = "/auth/")
     public RedirectView authUser() {
 
         System.out.println("REDIRECT URI:" + redirectUri);
@@ -57,8 +57,8 @@ public class InstagramController {
 
     }
 
-    @RequestMapping(value = "/getToken/", method = RequestMethod.GET)
     @CrossOrigin(origins = "")
+    @RequestMapping(value = "/getToken/", method = RequestMethod.GET)
     public @ResponseBody int getToken(@RequestParam("code") String code) {
 
         String accessToken = instagramService.getToken(clientId, appSecret, redirectUri, code);
@@ -68,8 +68,8 @@ public class InstagramController {
         return new_id;
     }
 
-    @RequestMapping(value = "/classifyPhotos", method = RequestMethod.GET)
     @CrossOrigin(origins = "")
+    @RequestMapping(value = "/classifyPhotos", method = RequestMethod.GET)
     public @ResponseBody String classifyPhotos(@RequestParam("id") int id) throws Exception {
 
         Optional<User> user = userService.findById(id);
