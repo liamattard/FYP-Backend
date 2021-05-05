@@ -49,6 +49,7 @@ public class InstagramService {
             ResponseEntity<Image> responseThree = this.restTemplate.getForEntity(urlThree, Image.class);
             String encoded_url = null;
             String media_url = responseThree.getBody().media_url;
+            String media_type = responseThree.getBody().media_type;
             try {
 
                 encoded_url = encodeValue(media_url);
@@ -57,9 +58,12 @@ public class InstagramService {
                 e.printStackTrace();
                 return "Wrong";
             }
-            String urlFour = "http://localhost:5000/classify_image?url=" + encoded_url;
-            ResponseEntity<String> responseFour = this.restTemplate.getForEntity(urlFour, String.class);
-            allImages = allImages + "\n  \n  \n" + responseFour.getBody();
+            if (media_type.equals("IMAGE")) {
+                String urlFour = "http://localhost:5000/classify_image?url=" + encoded_url;
+                ResponseEntity<String> responseFour = this.restTemplate.getForEntity(urlFour, String.class);
+                allImages = allImages + "                     " + responseFour.getBody();
+
+            }
 
         }
 
