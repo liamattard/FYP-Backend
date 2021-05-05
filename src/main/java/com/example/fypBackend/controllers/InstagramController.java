@@ -1,5 +1,7 @@
 package com.example.fypBackend.controllers;
 
+import java.util.Optional;
+
 import com.example.fypBackend.entities.User;
 import com.example.fypBackend.services.InstagramService;
 import com.example.fypBackend.services.UserService;
@@ -64,9 +66,27 @@ public class InstagramController {
     }
 
     @RequestMapping(value = "/classifyPhotos", method = RequestMethod.GET)
-    public @ResponseBody String classifyPhotos(@RequestParam("id") int id) {
+    public @ResponseBody String classifyPhotos(@RequestParam("id") int id) throws Exception {
 
-        return "FOUND USER";
+        Optional<User> user = userService.findById(id);
+
+        if (!user.isPresent()) {
+
+            return "Not Found";
+
+        }
+
+        String categories;
+
+        try {
+            categories = instagramService.classifyPhotos(user.get().getAccessToken());
+
+        } catch (Exception e) {
+
+            categories = "WWRONG";
+        }
+
+        return categories;
     }
 
 }
