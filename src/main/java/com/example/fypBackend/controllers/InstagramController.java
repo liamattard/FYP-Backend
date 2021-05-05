@@ -57,7 +57,7 @@ public class InstagramController {
 
     }
 
-    @CrossOrigin
+    @CrossOrigin('https://www.touristplanner.xyz')
     @RequestMapping(value = "/getToken/", method = RequestMethod.GET)
     public @ResponseBody int getToken(@RequestParam("code") String code) {
 
@@ -68,7 +68,7 @@ public class InstagramController {
         return new_id;
     }
 
-    @CrossOrigin
+    @CrossOrigin('https://www.touristplanner.xyz')
     @RequestMapping(value = "/classifyPhotos", method = RequestMethod.GET)
     public @ResponseBody String classifyPhotos(@RequestParam("id") int id) throws Exception {
 
