@@ -41,7 +41,7 @@ public class InstagramController {
         return new RestTemplate();
     }
 
-    @CrossOrigin
+    @CrossOrigin(origins = "https://www.touristplanner.xyz")
     @RequestMapping(value = "/auth/")
     public RedirectView authUser() {
 
@@ -57,7 +57,7 @@ public class InstagramController {
 
     }
 
-    @CrossOrigin('https://www.touristplanner.xyz')
+    @CrossOrigin(origins = "https://www.touristplanner.xyz")
     @RequestMapping(value = "/getToken/", method = RequestMethod.GET)
     public @ResponseBody int getToken(@RequestParam("code") String code) {
 
@@ -68,7 +68,7 @@ public class InstagramController {
         return new_id;
     }
 
-    @CrossOrigin('https://www.touristplanner.xyz')
+    @CrossOrigin(origins = "https://www.touristplanner.xyz")
     @RequestMapping(value = "/classifyPhotos", method = RequestMethod.GET)
     public @ResponseBody String classifyPhotos(@RequestParam("id") int id) throws Exception {
 
