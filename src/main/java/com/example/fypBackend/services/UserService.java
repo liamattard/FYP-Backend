@@ -25,6 +25,11 @@ public class UserService {
 
     }
 
+    public void updateUser(User user) {
+        userRepository.saveAndFlush(user);
+
+    }
+
     public Optional<User> findById(int id) {
         return userRepository.findById(id);
     }

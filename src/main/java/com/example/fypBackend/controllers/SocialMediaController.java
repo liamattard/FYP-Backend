@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
-@RestController
 @CrossOrigin(origins = "https://www.touristplanner.xyz")
+@RestController
 public class SocialMediaController {
 
     @Autowired
@@ -36,9 +36,6 @@ public class SocialMediaController {
 
     @Value("${instagram.appSecret}")
     String appSecret;
-
-    @Value("${facebook.state}")
-    String fbState;
 
     @Value("${facebook.client.id}")
     String fbClientId;
@@ -76,9 +73,7 @@ public class SocialMediaController {
 
         String baseUrl = "https://www.facebook.com/v10.0/dialog/oauth?";
 
-        String updatedURL = fbRedirectUri + "?id=" + id;
-        updatedURL = socialMediaService.encodeValue(updatedURL);
-        String facebookUrl = baseUrl + "client_id=" + fbClientId + "&redirect_uri=" + updatedURL + "&state=" + fbState;
+        String facebookUrl = baseUrl + "client_id=" + fbClientId + "&redirect_uri=" + fbRedirectUri + "&state=" + id;
         System.out.println("URL= " + facebookUrl);
         RedirectView redirectUrl = new RedirectView();
         redirectUrl.setUrl(facebookUrl);
@@ -87,25 +82,36 @@ public class SocialMediaController {
     }
 
     @RequestMapping(value = "/getFacebookToken", method = RequestMethod.GET)
-    public @ResponseBody String getFBToken(@RequestParam("code") String code, @RequestParam("id") int id)
-            throws Exception {
+    public RedirectView getFBToken(@RequestParam("code") String code, @RequestParam("state") int id) throws Exception {
 
-        String updatedURL = fbRedirectUri + "?id=" + id;
-        updatedURL = socialMediaService.encodeValue(updatedURL);
-        String accessToken = socialMediaService.getFBToken(fbClientId, fbAppSecret, updatedURL, code);
-        System.out.println("GOT ACCESS TOKEN!!: " + accessToken);
+        String fbaccessToken = socialMediaService.getFBToken(fbClientId, fbAppSecret, fbRedirectUri, code);
+        Optional<User> user = userService.findById(id);
 
-        return "Updated user" + id;
+        RedirectView redirectUrl = new RedirectView();
+        if (!user.isPresent()) {
+
+            redirectUrl.setUrl("https://www.touristplanner.xyz");
+        }
+
+        User current_user = user.get();
+        current_user.setFbAccessToken(fbaccessToken);
+        userService.updateUser(current_user);
+        redirectUrl.setUrl("https://www.touristplanner.xyz/screens/loading.html?id=" +id);
+
+        return redirectUrl;
     }
 
     @RequestMapping(value = "/getToken/", method = RequestMethod.GET)
-    public @ResponseBody int getToken(@RequestParam("code") String code) {
+    public RedirectView getToken(@RequestParam("code") String code) {
 
         String accessToken = socialMediaService.getToken(clientId, appSecret, redirectUri, code);
         User user = new User(accessToken);
         int new_id = userService.createUser(user);
 
-        return new_id;
+        String new_url = "https://www.touristplanner.xyz/screens/step2.html?id=" + new_id;
+        RedirectView redirectUrl = new RedirectView();
+        redirectUrl.setUrl(new_url);
+        return redirectUrl;
     }
 
     @RequestMapping(value = "/classifyPhotos", method = RequestMethod.GET)
