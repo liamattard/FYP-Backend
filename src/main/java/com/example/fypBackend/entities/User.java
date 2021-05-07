@@ -22,6 +22,9 @@ public class User {
     @Column(name = "access_token")
     private String accessToken;
 
+    @Column(name = "fbaccess_token")
+    private String fbAccessToken;
+
     @Column(name = "date_time")
     private java.sql.Timestamp date_time;
 
@@ -59,6 +62,14 @@ public class User {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public String getFbAccessToken() {
+        return this.fbAccessToken;
+    }
+
+    public void setFbAccessToken(String fbAccessToken) {
+        this.fbAccessToken = fbAccessToken;
     }
 
     public java.sql.Timestamp getDate_time() {

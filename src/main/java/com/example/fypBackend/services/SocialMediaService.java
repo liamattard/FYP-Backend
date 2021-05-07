@@ -22,11 +22,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class InstagramService {
+public class SocialMediaService {
 
     private final RestTemplate restTemplate;
 
-    public InstagramService(RestTemplateBuilder restTemplateBuilder) {
+    public SocialMediaService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
     }
 
@@ -71,6 +71,27 @@ public class InstagramService {
 
     }
 
+    public String getFBToken(String clientId, String appSecret, String redirectUri, String code) {
+
+        String url = "https://graph.facebook.com/v10.0/oauth/access_token?";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("client_id", clientId);
+        map.add("redirect_uri", redirectUri);
+        map.add("client_secret", appSecret);
+        map.add("code", code);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<Response> response = this.restTemplate.postForEntity(url, request, Response.class);
+
+        String access_token = response.getBody().getAccess_token();
+
+        return access_token;
+    }
+
     public String getToken(String clientId, String appSecret, String redirectUri, String code) {
 
         String url = "https://api.instagram.com/oauth/access_token";
@@ -93,7 +114,7 @@ public class InstagramService {
         return access_token;
     }
 
-    private String encodeValue(String value) throws Exception {
+    public String encodeValue(String value) throws Exception {
         return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
     }
 

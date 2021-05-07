@@ -3,7 +3,7 @@ package com.example.fypBackend.controllers;
 import java.util.Optional;
 
 import com.example.fypBackend.entities.User;
-import com.example.fypBackend.services.InstagramService;
+import com.example.fypBackend.services.SocialMediaService;
 import com.example.fypBackend.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +20,10 @@ import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @CrossOrigin(origins = "https://www.touristplanner.xyz")
-public class InstagramController {
+public class SocialMediaController {
 
     @Autowired
-    private InstagramService instagramService;
+    private SocialMediaService socialMediaService;
 
     @Autowired
     private UserService userService;
@@ -37,13 +37,25 @@ public class InstagramController {
     @Value("${instagram.appSecret}")
     String appSecret;
 
+    @Value("${facebook.state}")
+    String fbState;
+
+    @Value("${facebook.client.id}")
+    String fbClientId;
+
+    @Value("${facebook.redirectUrl}")
+    String fbRedirectUri;
+
+    @Value("${facebook.appSecret}")
+    String fbAppSecret;
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
     @RequestMapping(value = "/auth/")
-    public RedirectView authUser() {
+    public RedirectView fbauthUser() {
 
         System.out.println("REDIRECT URI:" + redirectUri);
 
@@ -57,10 +69,39 @@ public class InstagramController {
 
     }
 
+    @RequestMapping(value = "/fbAuth/")
+    public RedirectView fbAuthUser(@RequestParam("id") int id) throws Exception {
+
+        System.out.println("REDIRECT URI:" + redirectUri);
+
+        String baseUrl = "https://www.facebook.com/v10.0/dialog/oauth?";
+
+        String updatedURL = fbRedirectUri + "?id=" + id;
+        updatedURL = socialMediaService.encodeValue(updatedURL);
+        String facebookUrl = baseUrl + "client_id=" + fbClientId + "&redirect_uri=" + updatedURL + "&state=" + fbState;
+        System.out.println("URL= " + facebookUrl);
+        RedirectView redirectUrl = new RedirectView();
+        redirectUrl.setUrl(facebookUrl);
+        return redirectUrl;
+
+    }
+
+    @RequestMapping(value = "/getFacebookToken", method = RequestMethod.GET)
+    public @ResponseBody String getFBToken(@RequestParam("code") String code, @RequestParam("id") int id)
+            throws Exception {
+
+        String updatedURL = fbRedirectUri + "?id=" + id;
+        updatedURL = socialMediaService.encodeValue(updatedURL);
+        String accessToken = socialMediaService.getFBToken(fbClientId, fbAppSecret, updatedURL, code);
+        System.out.println("GOT ACCESS TOKEN!!: " + accessToken);
+
+        return "Updated user" + id;
+    }
+
     @RequestMapping(value = "/getToken/", method = RequestMethod.GET)
     public @ResponseBody int getToken(@RequestParam("code") String code) {
 
-        String accessToken = instagramService.getToken(clientId, appSecret, redirectUri, code);
+        String accessToken = socialMediaService.getToken(clientId, appSecret, redirectUri, code);
         User user = new User(accessToken);
         int new_id = userService.createUser(user);
 
@@ -81,7 +122,7 @@ public class InstagramController {
         String categories;
 
         try {
-            categories = instagramService.classifyPhotos(user.get().getAccessToken());
+            categories = socialMediaService.classifyPhotos(user.get().getAccessToken());
 
         } catch (Exception e) {
 
