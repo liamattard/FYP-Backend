@@ -3,6 +3,7 @@ package com.example.fypBackend.controllers;
 import java.util.Optional;
 
 import com.example.fypBackend.entities.User;
+import com.example.fypBackend.entities.facebookLikes.LikesResponse;
 import com.example.fypBackend.services.SocialMediaService;
 import com.example.fypBackend.services.UserService;
 
@@ -96,7 +97,7 @@ public class SocialMediaController {
         User current_user = user.get();
         current_user.setFbAccessToken(fbaccessToken);
         userService.updateUser(current_user);
-        redirectUrl.setUrl("https://www.touristplanner.xyz/screens/loading.html?id=" +id);
+        redirectUrl.setUrl("https://www.touristplanner.xyz/screens/loading.html?id=" + id);
 
         return redirectUrl;
     }
@@ -138,4 +139,19 @@ public class SocialMediaController {
         return categories;
     }
 
+    @RequestMapping(value = "/getUserLikes", method = RequestMethod.GET)
+    public @ResponseBody String getUserLikes(@RequestParam("id") int id) throws Exception {
+
+        Optional<User> user = userService.findById(id);
+
+        if (!user.isPresent()) {
+
+            return "WRONG";
+
+        }
+
+        String test = socialMediaService.getUserLikes(user.get().getFbAccessToken());
+
+        return test;
+    }
 }

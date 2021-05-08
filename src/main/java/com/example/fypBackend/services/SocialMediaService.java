@@ -9,17 +9,23 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import com.example.fypBackend.entities.Response;
+import com.example.fypBackend.entities.facebookLikes.AllLikes;
+import com.example.fypBackend.entities.facebookLikes.Like;
+import com.example.fypBackend.entities.facebookLikes.LikesResponse;
 
 import org.springframework.util.LinkedMultiValueMap;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class SocialMediaService {
@@ -112,6 +118,73 @@ public class SocialMediaService {
         String access_token = response.getBody().getAccess_token();
 
         return access_token;
+    }
+
+    public String getUserLikes(String access_token) throws Exception {
+
+        String nextPage = null;
+        String categories = "";
+        boolean pageOne = true;
+
+        do {
+
+            String url;
+
+            if (nextPage == null) {
+
+                url = "https://graph.facebook.com/v10.0/me?fields=likes{category}&access_token=";
+
+                url = url + access_token;
+            } else {
+                pageOne = false;
+
+                url = nextPage;
+
+            }
+
+            System.out.println("URL: " + url);
+
+            HttpHeaders headers = new HttpHeaders();
+            HttpEntity<?> request = new HttpEntity<>(headers);
+
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url);
+            UriComponents uriComponents = builder.build().encode();
+
+            AllLikes likes = null;
+            if (pageOne == true) {
+
+                ResponseEntity<LikesResponse> response = this.restTemplate.exchange(uriComponents.toUri(),
+                        HttpMethod.GET, request, LikesResponse.class);
+
+                likes = response.getBody().likes;
+            } else {
+
+                ResponseEntity<AllLikes> response = this.restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET,
+                        request, AllLikes.class);
+
+                likes = response.getBody();
+
+            }
+
+            System.out.println("what??");
+            for (int i = 0; i < likes.data.size(); i++) {
+
+                categories += "  " + likes.data.get(i).category;
+                System.out.println("CATEGORY: " + likes.data.get(i).category);
+
+            }
+            if (likes.paging.next != null) {
+
+                nextPage = likes.paging.next;
+
+            } else {
+                nextPage = null;
+            }
+
+        } while (nextPage != null);
+
+        return categories;
+
     }
 
     public String encodeValue(String value) throws Exception {
