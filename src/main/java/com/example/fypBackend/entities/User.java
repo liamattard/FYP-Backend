@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -35,6 +36,10 @@ public class User {
     @JoinColumn(name = "system_id")
     private System system;
 
+    @OneToOne
+    @JoinColumn(name = "character_id")
+    private Characteristics characteristics;
+
     public User() {
 
     }
@@ -50,6 +55,16 @@ public class User {
 
     public Integer getUser_id() {
         return this.user_id;
+    }
+
+    public Characteristics getCharacteristics_id() {
+        return this.characteristics;
+
+    }
+
+    public void setCharacterId(Characteristics characteristics) {
+        this.characteristics = characteristics;
+
     }
 
     public void setUser_id(Integer user_id) {

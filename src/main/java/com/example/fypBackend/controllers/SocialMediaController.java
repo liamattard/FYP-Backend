@@ -2,19 +2,24 @@ package com.example.fypBackend.controllers;
 
 import java.util.Optional;
 
+import com.example.fypBackend.entities.Characteristics;
 import com.example.fypBackend.entities.User;
-import com.example.fypBackend.entities.facebookLikes.LikesResponse;
+import com.example.fypBackend.repositories.UserRepository;
+import com.example.fypBackend.repositories.CharacteristicsRepository;
 import com.example.fypBackend.services.SocialMediaService;
 import com.example.fypBackend.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
@@ -28,6 +33,12 @@ public class SocialMediaController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private CharacteristicsRepository characteristicsRespository;
 
     @Value("${instagram.client.id}")
     String clientId;
@@ -115,28 +126,36 @@ public class SocialMediaController {
         return redirectUrl;
     }
 
-    @RequestMapping(value = "/classifyPhotos", method = RequestMethod.GET)
-    public @ResponseBody String classifyPhotos(@RequestParam("id") int id) throws Exception {
+    @RequestMapping(value = "/classifyPhotos", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> classifyPhotos(@RequestParam("id") int id) throws Exception {
 
         Optional<User> user = userService.findById(id);
+        User final_user = null;
 
-        if (!user.isPresent()) {
+        if (user.isPresent()) {
 
-            return "Not Found";
+            try {
+
+                final_user = socialMediaService.classifyPhotos(user.get());
+                Characteristics characteristics = characteristicsRespository
+                        .saveAndFlush(final_user.getCharacteristics_id());
+                final_user.setCharacterId(characteristics);
+                final_user = userRepository.saveAndFlush(final_user);
+
+            } catch (Exception e) {
+
+                return ResponseEntity.badRequest().body("User preferences not gathered");
+
+            }
+
+        } else {
+
+            return ResponseEntity.badRequest().body("User preferences not gathered");
 
         }
+        return ResponseEntity.ok("User preferences gathered");
 
-        String categories;
-
-        try {
-            categories = socialMediaService.classifyPhotos(user.get().getAccessToken());
-
-        } catch (Exception e) {
-
-            categories = "WWRONG";
-        }
-
-        return categories;
     }
 
     @RequestMapping(value = "/getUserLikes", method = RequestMethod.GET)
