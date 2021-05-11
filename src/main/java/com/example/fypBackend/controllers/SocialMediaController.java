@@ -24,7 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.RedirectView;
 
-@CrossOrigin(origins = "https://www.touristplanner.xyz")
+//@CrossOrigin(origins = "https://www.touristplanner.xyz")
+@CrossOrigin(origins = "*")
 @RestController
 public class SocialMediaController {
 
@@ -158,19 +159,23 @@ public class SocialMediaController {
 
     }
 
-    @RequestMapping(value = "/getUserLikes", method = RequestMethod.GET)
-    public @ResponseBody String getUserLikes(@RequestParam("id") int id) throws Exception {
+    @RequestMapping(value = "/getUserLikes", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getUserLikes(@RequestParam("id") int id) throws Exception {
 
         Optional<User> user = userService.findById(id);
 
         if (!user.isPresent()) {
 
-            return "WRONG";
+            return ResponseEntity.badRequest().body("User Not Found");
 
         }
 
-        String test = socialMediaService.getUserLikes(user.get().getFbAccessToken());
+        User final_user = socialMediaService.getUserLikes(user.get());
+        Characteristics characteristics = characteristicsRespository.saveAndFlush(final_user.getCharacteristics_id());
+        final_user.setCharacterId(characteristics);
+        final_user = userRepository.saveAndFlush(final_user);
 
-        return test;
+        return ResponseEntity.ok("User preferences gathered");
     }
 }

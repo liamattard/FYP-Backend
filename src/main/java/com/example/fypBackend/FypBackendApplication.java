@@ -14,6 +14,7 @@ public class FypBackendApplication {
 
     public static void main(String[] args) throws IOException {
         Tools.setPlacesApiCategories();
+        Tools.setLikesApiCategories();
         SpringApplication.run(FypBackendApplication.class, args);
     }
 

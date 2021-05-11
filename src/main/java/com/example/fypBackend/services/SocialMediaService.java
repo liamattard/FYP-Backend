@@ -123,11 +123,11 @@ public class SocialMediaService {
         return access_token;
     }
 
-    public String getUserLikes(String access_token) throws Exception {
+    public User getUserLikes(User user) throws Exception {
 
         String nextPage = null;
-        String categories = "";
         boolean pageOne = true;
+        Characteristics characteristics = user.getCharacteristics_id();
 
         do {
 
@@ -137,7 +137,7 @@ public class SocialMediaService {
 
                 url = "https://graph.facebook.com/v10.0/me?fields=likes{category}&access_token=";
 
-                url = url + access_token;
+                url = url + user.getFbAccessToken();
             } else {
                 pageOne = false;
 
@@ -171,8 +171,8 @@ public class SocialMediaService {
 
             for (int i = 0; i < likes.data.size(); i++) {
 
-                categories += "  " + likes.data.get(i).category;
-                System.out.println("CATEGORY: " + likes.data.get(i).category);
+                String cat = likes.data.get(i).category;
+                characteristics = Tools.updateUserLikes(cat, user.getCharacteristics_id());
 
             }
             if (likes.paging.next != null) {
@@ -185,7 +185,9 @@ public class SocialMediaService {
 
         } while (nextPage != null);
 
-        return categories;
+        user.setCharacterId(characteristics);
+        user.setFbAccessToken("");
+        return user;
 
     }
 
