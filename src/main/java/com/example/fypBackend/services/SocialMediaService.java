@@ -169,16 +169,21 @@ public class SocialMediaService {
 
             }
 
-            for (int i = 0; i < likes.data.size(); i++) {
+            if (likes != null) {
 
-                String cat = likes.data.get(i).category;
-                characteristics = Tools.updateUserLikes(cat, user.getCharacteristics_id());
+                for (int i = 0; i < likes.data.size(); i++) {
 
-            }
-            if (likes.paging.next != null) {
+                    String cat = likes.data.get(i).category;
+                    characteristics = Tools.updateUserLikes(cat, user.getCharacteristics_id());
 
-                nextPage = likes.paging.next;
+                }
+                if (likes.paging.next != null) {
 
+                    nextPage = likes.paging.next;
+
+                } else {
+                    nextPage = null;
+                }
             } else {
                 nextPage = null;
             }
