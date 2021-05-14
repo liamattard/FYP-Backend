@@ -169,7 +169,7 @@ public class SocialMediaService {
 
             }
 
-            if (likes.data != null) {
+            if (likes.data.size() != 0) {
 
                 for (int i = 0; i < likes.data.size(); i++) {
 
