@@ -21,6 +21,7 @@ public class Tools {
     public static Characteristics updateUserLikes(String facebookCategory, Characteristics characteristics) {
 
         if (facebookCategories.containsKey(facebookCategory)) {
+            System.out.println("Facebook Category = " + facebookCategory);
             String category = facebookCategories.get(facebookCategory);
             System.out.println("CATEGORY: " + category);
             if (category.equals("Museums")) {
