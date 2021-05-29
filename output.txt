@@ -1,0 +1,174 @@
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :bootRunMainClassName UP-TO-DATE
+
+> Task :bootRun
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.4.3)
+
+2021-05-29 17:30:00.489  INFO 12678 --- [           main] c.e.fypBackend.FypBackendApplication     : Starting FypBackendApplication using Java 11.0.11 on liam-UX490UA with PID 12678 (/home/liam/Documents/fyp/fypBackend/build/classes/java/main started by liam in /home/liam/Documents/fyp/fypBackend)
+2021-05-29 17:30:00.492  INFO 12678 --- [           main] c.e.fypBackend.FypBackendApplication     : No active profile set, falling back to default profiles: default
+2021-05-29 17:30:01.050  INFO 12678 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2021-05-29 17:30:01.096  INFO 12678 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 38 ms. Found 3 JPA repository interfaces.
+2021-05-29 17:30:01.549  INFO 12678 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8888 (https)
+2021-05-29 17:30:01.558  INFO 12678 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-05-29 17:30:01.558  INFO 12678 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.43]
+2021-05-29 17:30:01.630  INFO 12678 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-05-29 17:30:01.630  INFO 12678 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1092 ms
+2021-05-29 17:30:01.772  INFO 12678 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2021-05-29 17:30:01.799  INFO 12678 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.28.Final
+2021-05-29 17:30:01.882  INFO 12678 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2021-05-29 17:30:01.949  INFO 12678 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2021-05-29 17:30:02.862  INFO 12678 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-05-29 17:30:02.877  INFO 12678 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL81Dialect
+2021-05-29 17:30:04.426  INFO 12678 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2021-05-29 17:30:04.437  INFO 12678 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2021-05-29 17:30:04.776  WARN 12678 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2021-05-29 17:30:04.818  INFO 12678 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2021-05-29 17:30:05.608  INFO 12678 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8888 (https) with context path ''
+2021-05-29 17:30:05.617  INFO 12678 --- [           main] c.e.fypBackend.FypBackendApplication     : Started FypBackendApplication in 5.46 seconds (JVM running for 5.811)
+2021-05-29 17:30:27.896  INFO 12678 --- [nio-8888-exec-6] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-05-29 17:30:27.896  INFO 12678 --- [nio-8888-exec-6] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-05-29 17:30:27.897  INFO 12678 --- [nio-8888-exec-6] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+Hibernate: 
+    select
+        user0_.user_id as user_id1_2_0_,
+        user0_.access_token as access_t2_2_0_,
+        user0_.character_id as characte6_2_0_,
+        user0_.date_time as date_tim3_2_0_,
+        user0_.fbaccess_token as fbaccess4_2_0_,
+        user0_.score as score5_2_0_,
+        user0_.system_id as system_i7_2_0_,
+        characteri1_.character_id as characte1_0_1_,
+        characteri1_.bars as bars2_0_1_,
+        characteri1_.beach as beach3_0_1_,
+        characteri1_.museums as museums4_0_1_,
+        characteri1_.nature as nature5_0_1_,
+        characteri1_.night_club as night_cl6_0_1_,
+        characteri1_.shopping as shopping7_0_1_,
+        system2_.system_id as system_i1_1_2_,
+        system2_.system_name as system_n2_1_2_ 
+    from
+        public.user user0_ 
+    left outer join
+        public.characteristics characteri1_ 
+            on user0_.character_id=characteri1_.character_id 
+    left outer join
+        public.system system2_ 
+            on user0_.system_id=system2_.system_id 
+    where
+        user0_.user_id=?
+made it to here
+com.example.fypBackend.entities.Characteristics@71a306dd
+doing instagram
+url
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/75472292_582171152554880_390455665344178586_n.jpg?_nc_cat=106&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=LWaJsakxio0AX-3q__5&_nc_ht=scontent.cdninstagram.com&oh=69b1c24572b673bcc0740449dac79dd7&oe=60B65901
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/72208915_407504086584021_3864499266250355761_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=qxYSxI7l3uEAX-Y3wQq&_nc_ht=scontent.cdninstagram.com&oh=02940381d5adf8cd881fe1aa13420ba6&oe=60B7FA99
+two
+CATEGORY: Clubbing
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/56938412_136083244182870_8171112944756896736_n.jpg?_nc_cat=106&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=K2ibdrXeK9oAX_C-vn_&_nc_ht=scontent.cdninstagram.com&oh=b4ed24cdae92621cc6fe423a6202e7c9&oe=60B7AABF
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/52777751_1544349652362700_5724892789490743417_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=bxOWbTGyjqEAX8oj80e&_nc_ht=scontent.cdninstagram.com&oh=3e94b095d3f537660187862641bbb9bf&oe=60B67F64
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/53284409_123291848812327_2244531140403444586_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=Qgi04BVCC8wAX8rQ3xX&_nc_ht=scontent.cdninstagram.com&oh=3c16e6998feaa48760a80f3ecd8b2d02&oe=60B779BB
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/44271933_258921101635440_2647588740749523077_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=_MTcooNwn1IAX9p-LSO&_nc_ht=scontent.cdninstagram.com&oh=ceecdd792e86d61f187a9fc629751518&oe=60B7D706
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/44576001_2255076348089946_8433660348463712589_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=zPXk9fzT3ugAX9Ddse5&_nc_ht=scontent.cdninstagram.com&oh=19b7f658d469618067f6ba039599d2e8&oe=60B80B23
+two
+CATEGORY: Beach
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/39990120_400621663801453_1259775944424423424_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=CBLFQGmv1boAX_1Y9fT&_nc_ht=scontent.cdninstagram.com&oh=e6cee1c9afbc51c1b40c2167339859dd&oe=60B72C05
+two
+CATEGORY: Shopping
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/26869290_2057449921201551_8299239127958683648_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=rlg9iPncRMAAX8ivS30&_nc_oc=AQlv6txbbc5nbiTnnRMsPo6tHsZGKyQRofpJkj21R1EnD6Zzn3Tf2FIIe7T1GhWGS34&_nc_ht=scontent.cdninstagram.com&oh=f66869f894965ba4ae390a61f1222343&oe=60B6D744
+two
+CATEGORY: Shopping
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/25024081_800195390187870_2332229561703464960_n.jpg?_nc_cat=107&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=TFxmpkpp_ZYAX_Q3P-i&_nc_ht=scontent.cdninstagram.com&oh=b909cefc12b7a664683da632a08a3a62&oe=60B6B81E
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/25017804_145936669392535_8484016382038507520_n.jpg?_nc_cat=109&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=wbzhy4QKEOUAX9piGdV&_nc_ht=scontent.cdninstagram.com&oh=85a4db73f17df38c49b9a1f354f977c6&oe=60B75036
+two
+CATEGORY: Shopping
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/21690404_174984026397472_921534483746783232_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=oSlXiVBDOdsAX_geI9v&_nc_ht=scontent.cdninstagram.com&oh=effabf3f28e6f5df3eb3a4ebf585ea48&oe=60B76040
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/21568906_126385771342656_7917320624429596672_n.jpg?_nc_cat=107&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=FxED-s2TjwYAX97bM6I&_nc_ht=scontent.cdninstagram.com&oh=1e32286d51829dc18e68014d82e29605&oe=60B6F2A0
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/21041490_1441738375940780_5711540766845698048_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=AXaOgWS7Pg4AX9sHAJv&_nc_ht=scontent.cdninstagram.com&oh=743ecf6e3a351221b23d6d72225a2ad5&oe=60B7D88D
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/19535013_1922545524659753_1319669104453353472_n.jpg?_nc_cat=108&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=O2yChDcOv_gAX9ThmoZ&_nc_ht=scontent.cdninstagram.com&oh=c7d46e87cc0f8433315853dc469ff4de&oe=60B7AF93
+two
+CATEGORY: Shopping
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/19050578_108809689671849_9110697791797067776_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=UvsKk02voPUAX8SiKWs&_nc_ht=scontent.cdninstagram.com&oh=aad051702227661f71b8b761afb66123&oe=60B72FDF
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/17439083_198852237281237_2544392858702446592_n.jpg?_nc_cat=101&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=5l1KfPSVgcsAX9AgWnm&_nc_ht=scontent.cdninstagram.com&oh=997aca8f38bcd833a587f5b3c0ba0777&oe=60B7893C
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/16464444_243880916022170_257468939909464064_n.jpg?_nc_cat=100&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=qlPA_77w5fkAX-ei8eA&_nc_ht=scontent.cdninstagram.com&oh=038a2d1ce00d1f950a149221bcac8470&oe=60B6AD90
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/14596897_615997131922746_5240200004831805440_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=3R2MjIc_ixgAX_9lNvA&_nc_ht=scontent.cdninstagram.com&oh=b1b6c9bc1770f368ac948db227c1208a&oe=60B728F7
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/11355733_463231523846525_1517954909_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=XBlVDXH_G_QAX_kkB4O&_nc_oc=AQnCBtKydJ3Gudf2PvEH9EeZlqvL6G0hYaYMEgORX3po0qcohkNoUvBNihC7-LlJW3s&_nc_ht=scontent.cdninstagram.com&oh=472d5d00ab555f833f138ada9d6cb0ef&oe=60B692B5
+two
+CATEGORY: Museums
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/1389205_630748230281074_581649817_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=tFs-tcG9AQsAX9j4fH_&_nc_ht=scontent.cdninstagram.com&oh=5c809500c046cd507b9ab60c5f99eec2&oe=60B81849
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/1388847_616762408367549_526419014_n.jpg?_nc_cat=111&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=0WmlkCRHB9wAX8VaPz9&_nc_ht=scontent.cdninstagram.com&oh=1f336dc8b27eb9950550836524cd1eae&oe=60B6A934
+two
+three
+meee
+https://scontent.cdninstagram.com/v/t51.2885-15/11287786_505476742932973_978264985_n.jpg?_nc_cat=100&ccb=1-3&_nc_sid=8ae9d6&_nc_ohc=lKydwxX1RMIAX9dmDIr&_nc_ht=scontent.cdninstagram.com&oh=beb5535fff9386abad998d657cd89505&oe=60B6AD76
+two
+three
+did instagram
+com.example.fypBackend.entities.Characteristics@71a306dd
+doing facebook
+https://graph.facebook.com/v10.0/me?fields=id,name,photos{link}&access_token=EAAzCSiRiLd0BAEasUA5ZCCzQxyHq4eN1tYWRVgrnxRNyJQjzXlUZBJUts5aX1ZCADQCeZBcD7ZCcGKa2nZBHJeA34X6Q1xPyVNDQG0kFgyR5HxDZBl7IS41cZAZAZCD7oTONqjimmdC9cC9bgUj9k0UAltxj8THmpsHE5mHmzGTqCYT7JTvUzCzZAuur1BMHYOBv3UZD

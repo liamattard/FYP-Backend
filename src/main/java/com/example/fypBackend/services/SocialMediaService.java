@@ -4,11 +4,13 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import com.example.fypBackend.entities.Response;
 import com.example.fypBackend.entities.Characteristics;
+import com.example.fypBackend.entities.Response;
 import com.example.fypBackend.entities.User;
 import com.example.fypBackend.entities.facebookLikes.AllLikes;
 import com.example.fypBackend.entities.facebookLikes.LikesResponse;
+import com.example.fypBackend.entities.facebookPhotos.Photo;
+import com.example.fypBackend.entities.facebookPhotos.PhotosRoot;
 import com.example.fypBackend.entities.instagramResponse.Datum;
 import com.example.fypBackend.entities.instagramResponse.Image;
 import com.example.fypBackend.entities.instagramResponse.Root;
@@ -38,6 +40,36 @@ public class SocialMediaService {
 
     public User classifyPhotos(User user) throws Exception {
 
+        Characteristics characteristics = new Characteristics();
+        System.out.println("made it to here");
+        System.out.println(characteristics);
+
+        System.out.println("doing facebook");
+        try {
+            characteristics = classifyFacebookPhotos(user.getFbAccessToken(), characteristics);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        System.out.println("did facebook");
+        System.out.println(characteristics);
+
+        if (user.getInstaAccessToken() != null) {
+
+            System.out.println("doing instagram");
+            characteristics = classifyInstagramPhotos(user, characteristics);
+            System.out.println("did instagram");
+            System.out.println(characteristics);
+
+        }
+        user.setCharacterId(characteristics);
+        user.setInstaAccessToken("");
+        return user;
+    }
+
+    public Characteristics classifyInstagramPhotos(User user, Characteristics characteristics) throws Exception {
+
         String url = "https://graph.instagram.com/me/media?access_token=" + user.getInstaAccessToken();
         url = url + "&fields=id,caption";
 
@@ -45,10 +77,10 @@ public class SocialMediaService {
         System.out.println("url");
 
         List<Datum> listOfImages = responseTwo.getBody().data;
-        Characteristics characteristics = new Characteristics();
 
         for (int i = 0; i < listOfImages.size(); i++) {
 
+            System.out.println("meee");
             String urlTwo = "https://graph.instagram.com/" + listOfImages.get(i).id;
             urlTwo = urlTwo + "?fields=media_type,media_url";
             urlTwo = urlTwo + "&access_token=" + user.getInstaAccessToken();
@@ -58,6 +90,7 @@ public class SocialMediaService {
             String media_url = responseThree.getBody().media_url;
             String media_type = responseThree.getBody().media_type;
             System.out.println(media_url);
+            System.out.println("two");
 
             try {
 
@@ -67,17 +100,18 @@ public class SocialMediaService {
                 e.printStackTrace();
             }
             if (media_type.equals("IMAGE")) {
-                String urlFour = "http://localhost:5000/classify_image?url=" + encoded_url;
+                String urlFour = "http://localhost:8080/classify_image?url=" + encoded_url;
                 ResponseEntity<String> responseFour = this.restTemplate.getForEntity(urlFour, String.class);
                 int id = Integer.parseInt(responseFour.getBody());
                 characteristics = Tools.changeUserCategory(id, characteristics);
+                System.out.println("three");
 
             }
 
         }
-        user.setCharacterId(characteristics);
-        user.setInstaAccessToken("");
-        return user;
+
+        return characteristics;
+
     }
 
     public String getFBToken(String clientId, String appSecret, String redirectUri, String code) {
@@ -121,6 +155,45 @@ public class SocialMediaService {
         String access_token = response.getBody().getAccess_token();
 
         return access_token;
+    }
+
+    public Characteristics classifyFacebookPhotos(String fbAccess_token, Characteristics characteristics)
+            throws Exception {
+
+        String url = "https://graph.facebook.com/v10.0/me?fields=id,name,photos{link}&access_token=";
+        url = url + fbAccess_token;
+
+        System.out.println(url);
+        // ResponseEntity<PhotosRoot> responseTwo = this.restTemplate.getForEntity(url,
+        // PhotosRoot.class);
+        ResponseEntity<PhotosRoot> responseTwo = this.restTemplate.getForEntity(url, PhotosRoot.class, "{link}");
+
+        System.out.println("aa wasal ta facebook");
+        System.out.println("meet" + responseTwo.getBody().name);
+        List<Photo> listOfImages = responseTwo.getBody().photos.data;
+
+        for (int i = 0; i < listOfImages.size(); i++) {
+
+            for (int j = 0; j < listOfImages.get(i).images.size(); j++) {
+                String encoded_url = null;
+                try {
+
+                    System.out.println("aaaa..zz: " + listOfImages.get(i).images.get(j).source);
+                    encoded_url = encodeValue(listOfImages.get(i).images.get(j).source);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String urlFour = "http://localhost:8080/classify_image?url=" + encoded_url;
+                ResponseEntity<String> responseFour = this.restTemplate.getForEntity(urlFour, String.class);
+                int id = Integer.parseInt(responseFour.getBody());
+                characteristics = Tools.changeUserCategory(id, characteristics);
+
+            }
+
+        }
+
+        return characteristics;
     }
 
     public User getUserLikes(User user) throws Exception {
