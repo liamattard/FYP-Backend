@@ -21,7 +21,7 @@ public class User {
     private Integer user_id;
 
     @Column(name = "access_token")
-    private String accessToken;
+    private String InstaAccessToken;
 
     @Column(name = "fbaccess_token")
     private String fbAccessToken;
@@ -44,10 +44,10 @@ public class User {
 
     }
 
-    public User(String accessToken) {
+    public User(String fbAccessToken) {
 
         this.date_time = java.sql.Timestamp.from(Instant.now());
-        this.accessToken = accessToken;
+        this.fbAccessToken = fbAccessToken;
         this.score = 0;
         this.system = null;
 
@@ -71,12 +71,12 @@ public class User {
         this.user_id = user_id;
     }
 
-    public String getAccessToken() {
-        return this.accessToken;
+    public String getInstaAccessToken() {
+        return this.InstaAccessToken;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setInstaAccessToken(String accessToken) {
+        this.InstaAccessToken = accessToken;
     }
 
     public String getFbAccessToken() {

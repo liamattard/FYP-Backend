@@ -38,7 +38,7 @@ public class SocialMediaService {
 
     public User classifyPhotos(User user) throws Exception {
 
-        String url = "https://graph.instagram.com/me/media?access_token=" + user.getAccessToken();
+        String url = "https://graph.instagram.com/me/media?access_token=" + user.getInstaAccessToken();
         url = url + "&fields=id,caption";
 
         ResponseEntity<Root> responseTwo = this.restTemplate.getForEntity(url, Root.class);
@@ -51,7 +51,7 @@ public class SocialMediaService {
 
             String urlTwo = "https://graph.instagram.com/" + listOfImages.get(i).id;
             urlTwo = urlTwo + "?fields=media_type,media_url";
-            urlTwo = urlTwo + "&access_token=" + user.getAccessToken();
+            urlTwo = urlTwo + "&access_token=" + user.getInstaAccessToken();
 
             ResponseEntity<Image> responseThree = this.restTemplate.getForEntity(urlTwo, Image.class);
             String encoded_url = null;
@@ -76,7 +76,7 @@ public class SocialMediaService {
 
         }
         user.setCharacterId(characteristics);
-        user.setAccessToken("");
+        user.setInstaAccessToken("");
         return user;
     }
 
@@ -101,7 +101,7 @@ public class SocialMediaService {
         return access_token;
     }
 
-    public String getToken(String clientId, String appSecret, String redirectUri, String code) {
+    public String getInstaToken(String clientId, String appSecret, String redirectUri, String code) {
 
         String url = "https://api.instagram.com/oauth/access_token";
 
@@ -196,7 +196,7 @@ public class SocialMediaService {
 
     }
 
-    public String encodeValue(String value) throws Exception {
+    public static String encodeValue(String value) throws Exception {
         return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
     }
 

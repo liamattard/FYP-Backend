@@ -59,70 +59,77 @@ public class SocialMediaController {
     @Value("${facebook.appSecret}")
     String fbAppSecret;
 
+    public static int randomInt = 0;
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
-    @RequestMapping(value = "/auth/")
-    public RedirectView fbauthUser() {
-
-        System.out.println("REDIRECT URI:" + redirectUri);
-
-        String baseUrl = "https://api.instagram.com/oauth/authorize?";
-
-        String instagramUrl = baseUrl + "client_id=" + clientId + "&redirect_uri=" + redirectUri
-                + "&scope=user_profile,user_media&response_type=code";
-        RedirectView redirectUrl = new RedirectView();
-        redirectUrl.setUrl(instagramUrl);
-        return redirectUrl;
-
-    }
-
     @RequestMapping(value = "/fbAuth/")
-    public RedirectView fbAuthUser(@RequestParam("id") int id) throws Exception {
-
-        System.out.println("REDIRECT URI:" + redirectUri);
+    public RedirectView fbAuthUser() {
 
         String baseUrl = "https://www.facebook.com/v10.0/dialog/oauth?";
 
-        String facebookUrl = baseUrl + "client_id=" + fbClientId + "&redirect_uri=" + fbRedirectUri + "&state=" + id;
-        System.out.println("URL= " + facebookUrl);
+        randomInt += 1;
+        String facebookUrl = baseUrl + "client_id=" + fbClientId + "&redirect_uri=" + fbRedirectUri + "&state="
+                + randomInt;
         RedirectView redirectUrl = new RedirectView();
         redirectUrl.setUrl(facebookUrl);
         return redirectUrl;
 
     }
 
-    @RequestMapping(value = "/getFacebookToken", method = RequestMethod.GET)
-    public RedirectView getFBToken(@RequestParam("code") String code, @RequestParam("state") int id) throws Exception {
+    @RequestMapping(value = "/InstaAuth/")
+    public RedirectView instaAuthUser(@RequestParam("id") int id) throws Exception {
 
-        String fbaccessToken = socialMediaService.getFBToken(fbClientId, fbAppSecret, fbRedirectUri, code);
-        Optional<User> user = userService.findById(id);
+        String baseUrl = "https://api.instagram.com/oauth/authorize?";
 
+        String instagramUrl = baseUrl + "client_id=" + clientId + "&redirect_uri=" + redirectUri
+                + "&scope=user_profile,user_media&response_type=code" + "&state=" + id;
         RedirectView redirectUrl = new RedirectView();
-        if (!user.isPresent()) {
-
-            redirectUrl.setUrl("https://www.touristplanner.xyz");
-        }
-
-        User current_user = user.get();
-        current_user.setFbAccessToken(fbaccessToken);
-        userService.updateUser(current_user);
-        redirectUrl.setUrl("https://www.touristplanner.xyz/screens/loading.html?id=" + id);
-
+        redirectUrl.setUrl(instagramUrl);
         return redirectUrl;
+
     }
 
-    @RequestMapping(value = "/getToken/", method = RequestMethod.GET)
-    public RedirectView getToken(@RequestParam("code") String code) {
+    @RequestMapping(value = "/getFacebookToken", method = RequestMethod.GET)
+    public RedirectView getFBToken(@RequestParam("code") String code) throws Exception {
 
-        String accessToken = socialMediaService.getToken(clientId, appSecret, redirectUri, code);
-        User user = new User(accessToken);
+        String fbAccessToken = socialMediaService.getFBToken(fbClientId, fbAppSecret, fbRedirectUri, code);
+
+        User user = new User(fbAccessToken);
         int new_id = userService.createUser(user);
 
         String new_url = "https://www.touristplanner.xyz/screens/step2.html?id=" + new_id;
+
         RedirectView redirectUrl = new RedirectView();
+        redirectUrl.setUrl(new_url);
+        return redirectUrl;
+
+    }
+
+    @RequestMapping(value = "/getInstaToken/", method = RequestMethod.GET)
+    public RedirectView getInstaToken(@RequestParam("code") String code, @RequestParam("state") int id) {
+
+        String InstaAccessToken = socialMediaService.getInstaToken(clientId, appSecret, redirectUri, code);
+        Optional<User> user = userService.findById(id);
+
+        RedirectView redirectUrl = new RedirectView();
+
+        if (!user.isPresent()) {
+
+            redirectUrl.setUrl("https://www.touristplanner.xyz");
+            return redirectUrl;
+        }
+
+        User current_user = user.get();
+
+        String new_url = "https://www.touristplanner.xyz/screens/loading.html?id=" + current_user.getUser_id()
+                + "&withInsta=1";
+        current_user.setInstaAccessToken(InstaAccessToken);
+        userService.updateUser(current_user);
+
         redirectUrl.setUrl(new_url);
         return redirectUrl;
     }
