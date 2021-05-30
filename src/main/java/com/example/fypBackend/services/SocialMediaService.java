@@ -103,6 +103,13 @@ public class SocialMediaService {
 
         try {
             characteristics = classifyFacebookPhotos(user.getFbAccessToken(), characteristics);
+            System.out.println("did it Facebook !!: ");
+            System.out.println("beach: " + characteristics.getBeach());
+            System.out.println("bar: " + characteristics.getBars());
+            System.out.println("shopping: " + characteristics.getShopping());
+            System.out.println("nature: " + characteristics.getNature());
+            System.out.println("Museums: " + characteristics.getMuseums());
+            System.out.println("Nightclubs: " + characteristics.getNight_club());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,6 +123,13 @@ public class SocialMediaService {
         }
         user.setCharacterId(characteristics);
         user.setInstaAccessToken("");
+        System.out.println("did it Facebook !!: ");
+        System.out.println("beach: " + characteristics.getBeach());
+        System.out.println("bar: " + characteristics.getBars());
+        System.out.println("shopping: " + characteristics.getShopping());
+        System.out.println("nature: " + characteristics.getNature());
+        System.out.println("Museums: " + characteristics.getMuseums());
+        System.out.println("Nightclubs: " + characteristics.getNight_club());
         return user;
     }
 
@@ -132,16 +146,12 @@ public class SocialMediaService {
          * @param characteristics current user's characteristics
          */
 
-        String url = "https://graph.facebook.com/v10.0/me?fields=id,name,photos{link}&access_token=";
+        String url = "https://graph.facebook.com/v10.0/me?fields=id,name,photos{images}&access_token=";
         url = url + fbAccess_token;
 
         System.out.println(url);
-        // ResponseEntity<PhotosRoot> responseTwo = this.restTemplate.getForEntity(url,
-        // PhotosRoot.class);
-        ResponseEntity<PhotosRoot> responseTwo = this.restTemplate.getForEntity(url, PhotosRoot.class, "{link}");
+        ResponseEntity<PhotosRoot> responseTwo = this.restTemplate.getForEntity(url, PhotosRoot.class, "{images}");
 
-        System.out.println("aa wasal ta facebook");
-        System.out.println("meet" + responseTwo.getBody().name);
         List<Photo> listOfImages = responseTwo.getBody().photos.data;
 
         for (int i = 0; i < listOfImages.size(); i++) {
@@ -194,7 +204,7 @@ public class SocialMediaService {
             System.out.println("meee");
             String urlTwo = "https://graph.instagram.com/" + listOfImages.get(i).id;
             urlTwo = urlTwo + "?fields=media_type,media_url";
-            urlTwo = urlTwo + "&access_token=" + user.getInstaAccessToken();
+            urlTwo = urlTwo + "&access_token=" + InstaAccessToken;
 
             ResponseEntity<Image> responseThree = this.restTemplate.getForEntity(urlTwo, Image.class);
             String encoded_url = null;
