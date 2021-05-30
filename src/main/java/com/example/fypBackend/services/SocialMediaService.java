@@ -38,13 +38,69 @@ public class SocialMediaService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
+    public String getFBToken(String clientId, String appSecret, String redirectUri, String code) {
+        /*
+         * Requests for the user's access_token from the code.
+         */
+
+        String url = "https://graph.facebook.com/v10.0/oauth/access_token?";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("client_id", clientId);
+        map.add("redirect_uri", redirectUri);
+        map.add("client_secret", appSecret);
+        map.add("code", code);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<Response> response = this.restTemplate.postForEntity(url, request, Response.class);
+
+        String access_token = response.getBody().getAccess_token();
+
+        return access_token;
+    }
+
+    public String getInstaToken(String clientId, String appSecret, String redirectUri, String code) {
+        /*
+         * Requests for the user's access_token from the code.
+         *
+         */
+
+        String url = "https://api.instagram.com/oauth/access_token";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("client_id", clientId);
+        map.add("client_secret", appSecret);
+        map.add("grant_type", "authorization_code");
+        map.add("redirect_uri", redirectUri);
+        map.add("code", code);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<Response> response = this.restTemplate.postForEntity(url, request, Response.class);
+
+        String access_token = response.getBody().getAccess_token();
+
+        return access_token;
+    }
+
     public User classifyPhotos(User user) throws Exception {
+        /*
+         * First checks whether the user has connected their Instagram or not, Then it
+         * makes the appropriate requests to gather the user's photos using their
+         * access_tokens. The url's of the photos are sent to a seperate local server
+         * which classifies the photos. If the photos match a certain characteristic,
+         * the user's characteristics are updated.
+         * 
+         * @param User current user
+         */
 
         Characteristics characteristics = new Characteristics();
-        System.out.println("made it to here");
-        System.out.println(characteristics);
 
-        System.out.println("doing facebook");
         try {
             characteristics = classifyFacebookPhotos(user.getFbAccessToken(), characteristics);
 
@@ -52,15 +108,10 @@ public class SocialMediaService {
             e.printStackTrace();
 
         }
-        System.out.println("did facebook");
-        System.out.println(characteristics);
 
         if (user.getInstaAccessToken() != null) {
 
-            System.out.println("doing instagram");
-            characteristics = classifyInstagramPhotos(user, characteristics);
-            System.out.println("did instagram");
-            System.out.println(characteristics);
+            characteristics = classifyInstagramPhotos(user.getInstaAccessToken(), characteristics);
 
         }
         user.setCharacterId(characteristics);
@@ -68,9 +119,69 @@ public class SocialMediaService {
         return user;
     }
 
-    public Characteristics classifyInstagramPhotos(User user, Characteristics characteristics) throws Exception {
+    public Characteristics classifyFacebookPhotos(String fbAccess_token, Characteristics characteristics)
+            throws Exception {
+        /*
+         * A request is sent to graph.facebook.com to retrieve the url of the user's
+         * photos. The url is then sent to another local gunicorn server which
+         * classifies the images and returns a value. The value is then added with the
+         * user's characteristics using a method in the Tools class.
+         * 
+         * @param fbAccess_token user's facebook access_token
+         * 
+         * @param characteristics current user's characteristics
+         */
 
-        String url = "https://graph.instagram.com/me/media?access_token=" + user.getInstaAccessToken();
+        String url = "https://graph.facebook.com/v10.0/me?fields=id,name,photos{link}&access_token=";
+        url = url + fbAccess_token;
+
+        System.out.println(url);
+        // ResponseEntity<PhotosRoot> responseTwo = this.restTemplate.getForEntity(url,
+        // PhotosRoot.class);
+        ResponseEntity<PhotosRoot> responseTwo = this.restTemplate.getForEntity(url, PhotosRoot.class, "{link}");
+
+        System.out.println("aa wasal ta facebook");
+        System.out.println("meet" + responseTwo.getBody().name);
+        List<Photo> listOfImages = responseTwo.getBody().photos.data;
+
+        for (int i = 0; i < listOfImages.size(); i++) {
+
+            for (int j = 0; j < listOfImages.get(i).images.size(); j++) {
+                String encoded_url = null;
+                try {
+
+                    System.out.println("aaaa..zz: " + listOfImages.get(i).images.get(j).source);
+                    encoded_url = encodeValue(listOfImages.get(i).images.get(j).source);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String urlFour = "http://localhost:8080/classify_image?url=" + encoded_url;
+                ResponseEntity<String> responseFour = this.restTemplate.getForEntity(urlFour, String.class);
+                int id = Integer.parseInt(responseFour.getBody());
+                characteristics = Tools.changeUserCategory(id, characteristics);
+
+            }
+
+        }
+
+        return characteristics;
+    }
+
+    public Characteristics classifyInstagramPhotos(String InstaAccessToken, Characteristics characteristics)
+            throws Exception {
+        /*
+         * A request is sent to graph.facebook.com to retrieve the url of the user's
+         * photos. The url is then sent to another local gunicorn server which
+         * classifies the images and returns a value. The value is then added with the
+         * user's characteristics using a method in the Tools class.
+         * 
+         * @param fbAccess_token user's facebook access_token
+         * 
+         * @param characteristics current user's characteristics
+         */
+
+        String url = "https://graph.instagram.com/me/media?access_token=" + InstaAccessToken;
         url = url + "&fields=id,caption";
 
         ResponseEntity<Root> responseTwo = this.restTemplate.getForEntity(url, Root.class);
@@ -114,89 +225,15 @@ public class SocialMediaService {
 
     }
 
-    public String getFBToken(String clientId, String appSecret, String redirectUri, String code) {
-
-        String url = "https://graph.facebook.com/v10.0/oauth/access_token?";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-        map.add("client_id", clientId);
-        map.add("redirect_uri", redirectUri);
-        map.add("client_secret", appSecret);
-        map.add("code", code);
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-        ResponseEntity<Response> response = this.restTemplate.postForEntity(url, request, Response.class);
-
-        String access_token = response.getBody().getAccess_token();
-
-        return access_token;
-    }
-
-    public String getInstaToken(String clientId, String appSecret, String redirectUri, String code) {
-
-        String url = "https://api.instagram.com/oauth/access_token";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-        map.add("client_id", clientId);
-        map.add("client_secret", appSecret);
-        map.add("grant_type", "authorization_code");
-        map.add("redirect_uri", redirectUri);
-        map.add("code", code);
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-        ResponseEntity<Response> response = this.restTemplate.postForEntity(url, request, Response.class);
-
-        String access_token = response.getBody().getAccess_token();
-
-        return access_token;
-    }
-
-    public Characteristics classifyFacebookPhotos(String fbAccess_token, Characteristics characteristics)
-            throws Exception {
-
-        String url = "https://graph.facebook.com/v10.0/me?fields=id,name,photos{link}&access_token=";
-        url = url + fbAccess_token;
-
-        System.out.println(url);
-        // ResponseEntity<PhotosRoot> responseTwo = this.restTemplate.getForEntity(url,
-        // PhotosRoot.class);
-        ResponseEntity<PhotosRoot> responseTwo = this.restTemplate.getForEntity(url, PhotosRoot.class, "{link}");
-
-        System.out.println("aa wasal ta facebook");
-        System.out.println("meet" + responseTwo.getBody().name);
-        List<Photo> listOfImages = responseTwo.getBody().photos.data;
-
-        for (int i = 0; i < listOfImages.size(); i++) {
-
-            for (int j = 0; j < listOfImages.get(i).images.size(); j++) {
-                String encoded_url = null;
-                try {
-
-                    System.out.println("aaaa..zz: " + listOfImages.get(i).images.get(j).source);
-                    encoded_url = encodeValue(listOfImages.get(i).images.get(j).source);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                String urlFour = "http://localhost:8080/classify_image?url=" + encoded_url;
-                ResponseEntity<String> responseFour = this.restTemplate.getForEntity(urlFour, String.class);
-                int id = Integer.parseInt(responseFour.getBody());
-                characteristics = Tools.changeUserCategory(id, characteristics);
-
-            }
-
-        }
-
-        return characteristics;
-    }
-
     public User getUserLikes(User user) throws Exception {
+        /*
+         * A request is sent to graph.facebook.com to retrieve the category of the
+         * user's likes. The value is then added with the existing user's
+         * characteristics using a method in the Tools class.
+         * 
+         * @param user current user
+         * 
+         */
 
         String nextPage = null;
         boolean pageOne = true;
