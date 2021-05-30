@@ -76,7 +76,7 @@ public class SocialMediaController {
 
         randomInt += 1;
         String facebookUrl = baseUrl + "client_id=" + fbClientId + "&redirect_uri=" + fbRedirectUri + "&state="
-                + randomInt;
+                + randomInt + "&scope=user_photos,user_likes";
         RedirectView redirectUrl = new RedirectView();
         redirectUrl.setUrl(facebookUrl);
         return redirectUrl;
