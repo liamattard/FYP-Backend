@@ -3,11 +3,9 @@ package com.example.fypBackend.controllers;
 import java.util.Optional;
 
 import com.example.fypBackend.entities.Characteristics;
-import com.example.fypBackend.entities.Score;
 import com.example.fypBackend.entities.User;
 import com.example.fypBackend.repositories.UserRepository;
 import com.example.fypBackend.repositories.CharacteristicsRepository;
-import com.example.fypBackend.repositories.ScoreRepository;
 import com.example.fypBackend.services.SocialMediaService;
 import com.example.fypBackend.services.UserService;
 
@@ -41,9 +39,6 @@ public class SocialMediaController {
 
     @Autowired
     private CharacteristicsRepository characteristicsRespository;
-
-    @Autowired
-    private ScoreRepository scoreRepository;
 
     @Value("${instagram.client.id}")
     String clientId;
@@ -192,9 +187,7 @@ public class SocialMediaController {
 
                 Characteristics characteristics = characteristicsRespository
                         .saveAndFlush(final_user.getCharacteristics_id());
-                Score score = scoreRepository.saveAndFlush(final_user.getScore());
                 final_user.setCharacterId(characteristics);
-                final_user.setScore(score);
                 final_user = userRepository.saveAndFlush(final_user);
 
             } catch (Exception e) {
@@ -232,9 +225,7 @@ public class SocialMediaController {
 
         User final_user = socialMediaService.getUserLikes(user.get());
         Characteristics characteristics = characteristicsRespository.saveAndFlush(final_user.getCharacteristics_id());
-        Score score = scoreRepository.saveAndFlush(final_user.getScore());
         final_user.setCharacterId(characteristics);
-        final_user.setScore(score);
         final_user = userRepository.saveAndFlush(final_user);
 
         return ResponseEntity.ok("User preferences gathered");

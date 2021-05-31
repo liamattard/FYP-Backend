@@ -30,10 +30,6 @@ public class User {
     private java.sql.Timestamp date_time;
 
     @OneToOne
-    @JoinColumn(name = "score_id")
-    private Score score;
-
-    @OneToOne
     @JoinColumn(name = "character_id")
     private Characteristics characteristics;
 
@@ -88,14 +84,6 @@ public class User {
 
     public void setDate_time(java.sql.Timestamp date_time) {
         this.date_time = date_time;
-    }
-
-    public Score getScore() {
-        return this.score;
-    }
-
-    public void setScore(Score score) {
-        this.score = score;
     }
 
 }
