@@ -230,4 +230,66 @@ public class SocialMediaController {
 
         return ResponseEntity.ok("User preferences gathered");
     }
+
+    @RequestMapping(value = "/setTimetableInfo", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> setTimetableInfo(@RequestParam("id") int id, @RequestParam("moderation") int moderation,
+            @RequestParam("number_of_days") int numberOfDays) throws Exception {
+        /*
+         * After classifying the user's images, this endpoint classifies the user's
+         * likes NO CLASSIFICATIONS ARE STORED ON ANY SERVER.
+         * 
+         * @param id representing the user
+         * 
+         * @param moderation representing the timetable's business
+         * 
+         * @param numberOfDays representing the number of days in the timetable
+         */
+
+        Optional<User> user = userService.findById(id);
+
+        if (!user.isPresent()) {
+
+            return ResponseEntity.badRequest().body("User Not Found");
+
+        }
+
+        if (moderation > 3 || moderation < 0) {
+            return ResponseEntity.badRequest().body("moderation out of range");
+        }
+        if (numberOfDays < 3 || numberOfDays > 8) {
+            return ResponseEntity.badRequest().body("numberOfDays out of range");
+        }
+
+        User current_user = user.get();
+        current_user.setModeration(moderation);
+        current_user.setNumberOfDays(numberOfDays);
+        userRepository.saveAndFlush(current_user);
+
+        return ResponseEntity.ok("Preferences have been set");
+    }
+
+    @RequestMapping(value = "/getItineraries", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getItineraries(@RequestParam("id") int id) throws Exception {
+        /*
+         * Gets the user's timetable preferences and requets the external server to
+         * generate the itineraries
+         *
+         * @param id representing the user
+         */
+        Optional<User> user = userService.findById(id);
+
+        if (!user.isPresent()) {
+
+            return ResponseEntity.badRequest().body("User Not Found");
+
+        }
+
+        User current_user = user.get();
+        ResponseEntity<?> response = socialMediaService.generateTimetable(current_user);
+
+        return ResponseEntity.ok(response.getBody());
+
+    }
 }

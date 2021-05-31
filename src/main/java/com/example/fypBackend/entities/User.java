@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -32,6 +31,15 @@ public class User {
     @OneToOne
     @JoinColumn(name = "character_id")
     private Characteristics characteristics;
+
+    @Column(name = "system_selected")
+    private Integer systemSelected;
+
+    @Column(name = "moderation")
+    private Integer moderation;
+
+    @Column(name = "number_of_days")
+    private Integer numberOfDays;
 
     public User() {
 
@@ -84,6 +92,30 @@ public class User {
 
     public void setDate_time(java.sql.Timestamp date_time) {
         this.date_time = date_time;
+    }
+
+    public int getSystemSelected() {
+        return this.systemSelected;
+    }
+
+    public void setSystemSelected(int systemSelected) {
+        this.systemSelected = systemSelected;
+    }
+
+    public int getModeration() {
+        return this.moderation;
+    }
+
+    public void setModeration(int moderation) {
+        this.moderation = moderation;
+    }
+
+    public int getNumberOfDays() {
+        return this.numberOfDays;
+    }
+
+    public void setNumberOfDays(int numberOfDays) {
+        this.numberOfDays = numberOfDays;
     }
 
 }

@@ -309,6 +309,27 @@ public class SocialMediaService {
 
     }
 
+    public ResponseEntity<?> generateTimetable(User user) throws Exception {
+        /*
+         * A request is sent to the external server which generates and returns a
+         * timetable
+         * 
+         * @param moderation representing the timetable's business
+         * 
+         * @param numberOfDays representing the number of days to generate
+         *
+         */
+
+        String url = "http://localhost:8080/generate_itineraries?moderation=" + user.getModeration() + "&days="
+                + user.getNumberOfDays();
+        Characteristics characteristics = user.getCharacteristics_id();
+        url += "&beach=" + characteristics.getBeach() + "&nature=" + characteristics.getNature();
+        url += "&shopping=" + characteristics.getShopping() + "&clubbing=" + characteristics.getNight_club();
+        url += "&bars=" + characteristics.getBars() + "&museums=" + characteristics.getMuseums();
+        return this.restTemplate.getForEntity(url, String.class);
+
+    }
+
     public static String encodeValue(String value) throws Exception {
         return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
     }
