@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.example.fypBackend.entities.Characteristics;
+import com.example.fypBackend.entities.Score;
 
 public class Tools {
 
@@ -18,10 +19,12 @@ public class Tools {
 
     public static HashMap<String, String> facebookCategories = new HashMap<String, String>();
 
-    public static Characteristics updateUserLikes(String facebookCategory, Characteristics characteristics) {
+    public static Characteristics updateUserLikes(String facebookCategory, Characteristics characteristics,
+            Score score) {
 
         if (facebookCategories.containsKey(facebookCategory)) {
             System.out.println("Facebook Category = " + facebookCategory);
+            score.incrementLabelledLikes();
             String category = facebookCategories.get(facebookCategory);
             System.out.println("CATEGORY: " + category);
             if (category.equals("Museums")) {
@@ -42,10 +45,11 @@ public class Tools {
         return characteristics;
     }
 
-    public static Characteristics changeUserCategory(int categoryId, Characteristics characteristics) {
+    public static Characteristics changeUserCategory(int categoryId, Characteristics characteristics, Score score) {
 
         if (categories.containsKey(categoryId)) {
             String category = categories.get(categoryId);
+            score.incrementLabelledPhotos();
             System.out.println("CATEGORY: " + category);
             if (category.equals("Museums")) {
                 characteristics.setMuseums();

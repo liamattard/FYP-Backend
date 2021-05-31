@@ -29,12 +29,9 @@ public class User {
     @Column(name = "date_time")
     private java.sql.Timestamp date_time;
 
-    @Column(name = "score")
-    private int score;
-
-    @ManyToOne
-    @JoinColumn(name = "system_id")
-    private System system;
+    @OneToOne
+    @JoinColumn(name = "score_id")
+    private Score score;
 
     @OneToOne
     @JoinColumn(name = "character_id")
@@ -48,8 +45,6 @@ public class User {
 
         this.date_time = java.sql.Timestamp.from(Instant.now());
         this.fbAccessToken = fbAccessToken;
-        this.score = 0;
-        this.system = null;
 
     }
 
@@ -95,20 +90,12 @@ public class User {
         this.date_time = date_time;
     }
 
-    public int getScore() {
+    public Score getScore() {
         return this.score;
     }
 
-    public void setScore(int score) {
+    public void setScore(Score score) {
         this.score = score;
-    }
-
-    public System getSystem() {
-        return this.system;
-    }
-
-    public void setSystem(System system) {
-        this.system = system;
     }
 
 }
