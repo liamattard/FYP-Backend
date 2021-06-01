@@ -157,21 +157,19 @@ public class SocialMediaService {
 
         for (int i = 0; i < listOfImages.size(); i++) {
 
-            for (int j = 0; j < listOfImages.get(i).images.size(); j++) {
-                String encoded_url = null;
-                try {
+            String encoded_url = null;
 
-                    encoded_url = encodeValue(listOfImages.get(i).images.get(j).source);
+            try {
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                String urlFour = "http://localhost:8080/classify_image?url=" + encoded_url;
-                ResponseEntity<String> responseFour = this.restTemplate.getForEntity(urlFour, String.class);
-                int id = Integer.parseInt(responseFour.getBody());
-                characteristics = Tools.changeUserCategory(id, characteristics);
+                encoded_url = encodeValue(listOfImages.get(i).images.get(0).source);
 
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            String urlFour = "http://localhost:8080/classify_image?url=" + encoded_url;
+            ResponseEntity<String> responseFour = this.restTemplate.getForEntity(urlFour, String.class);
+            int id = Integer.parseInt(responseFour.getBody());
+            characteristics = Tools.changeUserCategory(id, characteristics);
 
         }
 
