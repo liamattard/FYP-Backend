@@ -292,4 +292,36 @@ public class SocialMediaController {
         return ResponseEntity.ok(response.getBody());
 
     }
+
+    @RequestMapping(value = "/updateScore", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public RedirectView getItineraries(@RequestParam("id") int id, @RequestParam("choice") int choice)
+            throws Exception {
+        /*
+         * Update the database with the choice of the user.
+         *
+         * @param id representing the user
+         *
+         * @param choice representing the user's chocie'
+         *
+         */
+
+        Optional<User> user = userService.findById(id);
+        RedirectView redirectUrl = new RedirectView();
+
+        if (!user.isPresent()) {
+
+            redirectUrl.setUrl("https://www.touristplanner.xyz");
+            return redirectUrl;
+
+        }
+
+        User current_user = user.get();
+        current_user.setSystemSelected(choice);
+        userRepository.saveAndFlush(current_user);
+
+        redirectUrl.setUrl("https://www.touristplanner.xyz/screens/thanks.html");
+        return redirectUrl;
+
+    }
 }
