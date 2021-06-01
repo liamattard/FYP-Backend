@@ -293,8 +293,7 @@ public class SocialMediaController {
 
     }
 
-    @RequestMapping(value = "/updateScore", method = RequestMethod.GET)
-    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/updateScore")
     public RedirectView getItineraries(@RequestParam("id") int id, @RequestParam("choice") int choice)
             throws Exception {
         /*
