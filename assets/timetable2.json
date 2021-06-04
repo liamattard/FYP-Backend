@@ -1,0 +1,32 @@
+{
+  "0": [
+    ["Mnajdra", "museums"],
+    ["Blue Grotto", "museums"],
+    ["Hal Saflieni Hypogeum", "museums"],
+    ["Mdina", "museums"]
+  ],
+  "1": [
+    ["Blue Grotto", "beach"],
+    ["Mnajdra", "nature"],
+    ["Fort St Elmo", "museums"],
+    ["Lower Barrakka Gardens", "nature"]
+  ],
+  "2": [
+    ["Popeye Village", "nature"],
+    ["Golden Bay Malta", "beach"]
+  ],
+  "3": [
+    ["Marsaxlokk bay", "nature"],
+    ["St Paul's Catacombs", "museums"],
+    ["Malta National Aquarium", "museums"]
+  ],
+  "4": [
+    ["Greek's Gate", "museums"],
+    ["Mdina", "nature"],
+    ["Palazzo Falson Museum", "museums"]
+  ],
+  "5": [
+    ["Fort Rinella", "nature"],
+    ["Palazzo Falson Museum", "museums"]
+  ]
+}

@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.example.fypBackend.entities.Characteristics;
 import com.example.fypBackend.entities.Response;
+import com.example.fypBackend.entities.Score;
 import com.example.fypBackend.entities.User;
 import com.example.fypBackend.entities.facebookLikes.AllLikes;
 import com.example.fypBackend.entities.facebookLikes.LikesResponse;
@@ -86,6 +87,50 @@ public class SocialMediaService {
         String access_token = response.getBody().getAccess_token();
 
         return access_token;
+    }
+
+    public Score updateScore(int response, User user, int q1, int q2) {
+
+        Score newScore = null;
+
+        if (user.getUser_id() % 2 == 0) {
+
+            if (response == 0) {
+
+                newScore = new Score();
+
+                newScore.personalisedPrefRating = q1;
+                newScore.personalisedOverRating = q2;
+
+            } else {
+
+                newScore = user.getScore();
+
+                newScore.nonPrefRating = q1;
+                newScore.nonOverRating = q2;
+            }
+
+        } else {
+
+            if (response == 0) {
+
+                newScore = new Score();
+
+                newScore.nonPrefRating = q1;
+                newScore.nonOverRating = q2;
+
+            } else {
+
+                newScore = user.getScore();
+
+                newScore.personalisedPrefRating = q1;
+                newScore.personalisedOverRating = q2;
+            }
+
+        }
+
+        return newScore;
+
     }
 
     public User classifyPhotos(User user) throws Exception {
@@ -307,7 +352,7 @@ public class SocialMediaService {
 
     }
 
-    public ResponseEntity<?> generateTimetable(User user) throws Exception {
+    public ResponseEntity<?> generateTimetable(User user, int response) throws Exception {
         /*
          * A request is sent to the external server which generates and returns a
          * timetable
@@ -320,10 +365,19 @@ public class SocialMediaService {
 
         String url = "http://localhost:8080/generate_itineraries?moderation=" + user.getModeration() + "&days="
                 + user.getNumberOfDays();
-        Characteristics characteristics = user.getCharacteristics_id();
-        url += "&beach=" + characteristics.getBeach() + "&nature=" + characteristics.getNature();
-        url += "&shopping=" + characteristics.getShopping() + "&clubbing=" + characteristics.getNight_club();
-        url += "&bars=" + characteristics.getBars() + "&museums=" + characteristics.getMuseums();
+
+        if ((user.getUser_id() % 2 == 0 && response == 1) || (user.getUser_id() % 2 != 0 && response == 0)) {
+            url += "&personalised= 0";
+
+        } else {
+
+            Characteristics characteristics = user.getCharacteristics_id();
+            url += "&beach=" + characteristics.getBeach() + "&nature=" + characteristics.getNature();
+            url += "&shopping=" + characteristics.getShopping() + "&clubbing=" + characteristics.getNight_club();
+            url += "&bars=" + characteristics.getBars() + "&museums=" + characteristics.getMuseums();
+            url += "&personalised=1";
+
+        }
         return this.restTemplate.getForEntity(url, String.class);
 
     }

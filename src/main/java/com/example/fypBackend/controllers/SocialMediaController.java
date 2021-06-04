@@ -3,9 +3,11 @@ package com.example.fypBackend.controllers;
 import java.util.Optional;
 
 import com.example.fypBackend.entities.Characteristics;
+import com.example.fypBackend.entities.Score;
 import com.example.fypBackend.entities.User;
 import com.example.fypBackend.repositories.UserRepository;
 import com.example.fypBackend.repositories.CharacteristicsRepository;
+import com.example.fypBackend.repositories.ScoreRepository;
 import com.example.fypBackend.services.SocialMediaService;
 import com.example.fypBackend.services.UserService;
 
@@ -36,6 +38,9 @@ public class SocialMediaController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ScoreRepository scoreRepository;
 
     @Autowired
     private CharacteristicsRepository characteristicsRespository;
@@ -271,7 +276,8 @@ public class SocialMediaController {
 
     @RequestMapping(value = "/getItineraries", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getItineraries(@RequestParam("id") int id) throws Exception {
+    public ResponseEntity<?> getItineraries(@RequestParam("id") int id, @RequestParam("response") int responseNumber)
+            throws Exception {
         /*
          * Gets the user's timetable preferences and requets the external server to
          * generate the itineraries
@@ -287,40 +293,57 @@ public class SocialMediaController {
         }
 
         User current_user = user.get();
-        ResponseEntity<?> response = socialMediaService.generateTimetable(current_user);
+        ResponseEntity<?> response = socialMediaService.generateTimetable(current_user, responseNumber);
 
         return ResponseEntity.ok(response.getBody());
 
     }
 
-    @RequestMapping(value = "/updateScore")
-    public RedirectView getItineraries(@RequestParam("id") int id, @RequestParam("choice") int choice)
-            throws Exception {
+    @RequestMapping(value = "/updateScore", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> updateScoreOne(@RequestParam("id") int id, @RequestParam("q1") int q1,
+            @RequestParam("q2") int q2, @RequestParam("response") int response) throws Exception {
         /*
-         * Update the database with the choice of the user.
-         *
+         * 
+         * Update the score of the survey for timetable One
+         * 
          * @param id representing the user
+         * 
+         * @param q1 response of first question
          *
-         * @param choice representing the user's chocie'
+         * @param q2 response of second question
          *
+         * @param response which response is the user answering
          */
 
         Optional<User> user = userService.findById(id);
-        RedirectView redirectUrl = new RedirectView();
+        User final_user = null;
 
-        if (!user.isPresent()) {
+        if (user.isPresent()) {
 
-            redirectUrl.setUrl("https://www.touristplanner.xyz");
-            return redirectUrl;
+            try {
+
+                final_user = user.get();
+                Score newScore = socialMediaService.updateScore(response, user.get(), q1, q2);
+
+                newScore = scoreRepository.saveAndFlush(newScore);
+
+                final_user.setScore(newScore);
+                final_user = userRepository.saveAndFlush(final_user);
+
+            } catch (Exception e) {
+
+                return ResponseEntity.badRequest().body("Score not updated");
+
+            }
+
+        } else {
+
+            return ResponseEntity.badRequest().body("Score not updated");
 
         }
-
-        User current_user = user.get();
-        current_user.setSystemSelected(choice);
-        userRepository.saveAndFlush(current_user);
-
-        redirectUrl.setUrl("https://www.touristplanner.xyz/screens/thanks.html");
-        return redirectUrl;
+        return ResponseEntity.ok("Score udpated");
 
     }
+
 }

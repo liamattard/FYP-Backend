@@ -32,8 +32,9 @@ public class User {
     @JoinColumn(name = "character_id")
     private Characteristics characteristics;
 
-    @Column(name = "system_selected")
-    private Integer systemSelected;
+    @OneToOne
+    @JoinColumn(name = "score_id")
+    private Score score;
 
     @Column(name = "moderation")
     private Integer moderation;
@@ -66,6 +67,15 @@ public class User {
 
     }
 
+    public Score getScore() {
+        return this.score;
+    }
+
+    public void setScore(Score score) {
+        this.score = score;
+
+    }
+
     public void setUser_id(Integer user_id) {
         this.user_id = user_id;
     }
@@ -92,14 +102,6 @@ public class User {
 
     public void setDate_time(java.sql.Timestamp date_time) {
         this.date_time = date_time;
-    }
-
-    public int getSystemSelected() {
-        return this.systemSelected;
-    }
-
-    public void setSystemSelected(int systemSelected) {
-        this.systemSelected = systemSelected;
     }
 
     public int getModeration() {
